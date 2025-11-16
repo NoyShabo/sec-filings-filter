@@ -1,6 +1,3 @@
 {
-  "version": 2,
-  "env": {
-    "FMP_API_KEY": "@fmp_api_key"
-  }
+  "version": 2
 }

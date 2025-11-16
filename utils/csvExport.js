@@ -39,7 +39,7 @@ function convertToCSV(data) {
       filing.cik || 'N/A',
       filing.formType || 'N/A',
       filing.filingDate || 'N/A',
-      formatMarketCap(filing.marketCap),
+      `"${formatMarketCap(filing.marketCap)}"`, // Quote the market cap to handle commas
       `"${filing.industry || 'N/A'}"`,
       `"${filing.sector || 'N/A'}"`,
       filing.filingUrl || 'N/A',

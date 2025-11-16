@@ -49,23 +49,6 @@ export function FilterPanel({ onSearch, loading }) {
       return;
     }
 
-    // Check if date range is too old (SEC API limitation)
-    const today = new Date();
-    const startDate = new Date(filters.startDate);
-    const daysAgo = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
-    
-    if (daysAgo > 30) {
-      const confirmed = window.confirm(
-        `⚠️ Warning: SEC API Limitation\n\n` +
-        `You selected a date range ${daysAgo} days ago.\n\n` +
-        `The SEC's "getcurrent" API only returns recent filings (typically last 30 days). ` +
-        `You may not get complete results for older dates.\n\n` +
-        `For best results, use date ranges within the last 30 days.\n\n` +
-        `Continue anyway?`
-      );
-      if (!confirmed) return;
-    }
-
     // Convert market cap strings to numbers
     const searchFilters = {
       startDate: filters.startDate,

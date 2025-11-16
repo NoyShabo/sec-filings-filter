@@ -48,7 +48,7 @@ export function useSECFilings() {
     setError(null);
 
     try {
-      const response = await axios.post('/api/filings/export', filters);
+      const response = await axios.post('/api/export', filters);
       return response.data.data;
     } catch (err) {
       console.error('Error fetching all filings:', err);

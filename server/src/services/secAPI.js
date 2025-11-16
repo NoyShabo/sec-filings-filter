@@ -54,6 +54,17 @@ export async function fetchSECFilings({ fileType, startDate, endDate, fetchAll =
         // Store the raw count before filtering
         const rawCount = allFilingsFromPage.length;
         
+        // Find the oldest filing date in this page
+        let oldestDateInPage = null;
+        allFilingsFromPage.forEach(filing => {
+          if (filing.filingDate) {
+            const dateNum = parseInt(filing.filingDate.replace(/-/g, ''));
+            if (!oldestDateInPage || dateNum < oldestDateInPage) {
+              oldestDateInPage = dateNum;
+            }
+          }
+        });
+        
         // Filter by date range (since getcurrent doesn't support date params)
         const filteredFilings = allFilingsFromPage.filter(filing => {
           if (!filing.filingDate) return false;
@@ -63,22 +74,28 @@ export async function fetchSECFilings({ fileType, startDate, endDate, fetchAll =
           return filingDateNum >= startDateNum && filingDateNum <= endDateNum;
         });
         
-        return { filings: filteredFilings, rawCount };
+        return { filings: filteredFilings, rawCount, oldestDateInPage };
       });
 
       allFilings.push(...filings.filings);
       pageCount++;
 
+      const startDateNum = parseInt(startDate);
       console.log(`Fetched ${filings.filings.length} filings matching date filter (${filings.rawCount} total from page, cumulative: ${allFilings.length})`);
+      console.log(`Oldest date in this page: ${filings.oldestDateInPage}, Target start date: ${startDateNum}`);
 
       // Check if we should continue
       if (!fetchAll) {
         // For paginated requests, return just this page
         hasMoreResults = false;
       } else if (filings.rawCount < RESULTS_PER_PAGE) {
-        // No more results available (check raw count, not filtered)
+        // No more results available from SEC API
         hasMoreResults = false;
-        console.log('No more pages available');
+        console.log('No more pages available from SEC API');
+      } else if (filings.oldestDateInPage && filings.oldestDateInPage < startDateNum) {
+        // We've gone past the start date - no need to fetch more
+        hasMoreResults = false;
+        console.log('Reached beyond start date - stopping pagination');
       } else {
         // Continue to next page
         currentStart += RESULTS_PER_PAGE;

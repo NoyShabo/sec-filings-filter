@@ -1,0 +1,161 @@
+# SEC Filings Filter - Project Intelligence
+
+## Critical Implementation Paths
+
+### SEC API Integration
+- **Always** include User-Agent header: 'SEC Filings Filter App contact@example.com'
+- **Always** use rate limiter (8 req/sec) for ALL SEC API calls
+- **API Action**: Use `action=getcurrent` (returns recent filings across all companies)
+- **Limitation**: `getcurrent` only returns recent filings (few months) - historical searches limited
+- **Date filtering**: Done on backend after fetch (API doesn't support date params)
+- **Response format**: XML/ATOM - requires regex-based parsing
+- **Pagination**: Use `start` parameter, increment by 100 (max results per page)
+- **Fetch all pages**: Continue until response length < requested count
+
+### Financial Modeling Prep Integration
+- **API Key**: Required in all requests via query param `?apikey=...`
+- **Rate Limits**: Free tier = 250 calls/day - be conservative
+- **CIK Conversion**: Pad CIK to 10 digits with leading zeros before lookup
+- **Batch Processing**: Process market cap lookups in batches of 10 with 100ms delays
+- **Error Handling**: Return null on individual failures, don't break entire flow
+
+### Data Flow Pattern
+```
+SEC Filings (CIK) → Convert CIK to Ticker → Fetch Market Cap → Merge & Filter
+```
+
+## Project-Specific Patterns
+
+### Infinite Scroll Implementation
+- Use Intersection Observer API (not scroll events)
+- Set rootMargin to '100px' to trigger early
+- Threshold: 0.1 for smooth UX
+- Always check `loading` and `hasMore` before triggering
+
+### CSV Export Strategy
+- **Search endpoint**: Single page (fast initial results)
+- **Export endpoint**: ALL pages (fetchAll: true)
+- Backend handles pagination, frontend just triggers
+- Show loading state during long exports
+
+### React State Management
+- Custom hooks over Redux (simple state, no need for complexity)
+- `useSECFilings` - centralized API logic
+- `useInfiniteScroll` - reusable scroll detection
+- Local state for filters (no need for global state)
+
+## Known Challenges
+
+### SEC API Quirks
+- Rate limit 429 errors if exceed 10 req/sec
+- XML parsing fragile - use defensive extraction
+- Empty responses don't mean error - just no results
+- Filing URLs sometimes incomplete - handle gracefully
+
+### Market Cap Data Quality
+- Not all companies have ticker symbols
+- Not all tickers have market cap data
+- CIK to ticker conversion can fail
+- **Solution**: Filter out companies without data when market cap filter active
+
+### Performance Considerations
+- Large date ranges = many SEC API pages
+- Each page = 1 rate-limited request
+- Market cap lookups multiply quickly
+- **Solution**: Batch processing, progress indicators, be patient
+
+## User Preferences & Workflow
+
+### Preferred Technologies
+- Vite over Create React App (speed)
+- Tailwind over CSS-in-JS (utility-first)
+- Express over other Node frameworks (simplicity)
+- Axios over fetch (consistency across frontend/backend)
+
+### Code Style
+- ES6 modules (`type: "module"` in package.json)
+- Async/await over promises chains
+- Functional React components (no classes)
+- JSDoc comments for complex functions
+- Descriptive variable names
+
+### Error Handling Philosophy
+- Log detailed errors server-side
+- Return user-friendly messages client-side
+- Continue processing on non-critical failures
+- Only throw on critical errors (auth, rate limits)
+
+## Evolution of Key Decisions
+
+### Rate Limiting Approach
+- **Initial thought**: Use simple setTimeout delays
+- **Final decision**: p-queue library for robust queueing
+- **Reason**: Better control, automatic queuing, reliable
+
+### Pagination Strategy
+- **Initial thought**: Single endpoint with optional fetchAll param
+- **Final decision**: Separate endpoints for search vs export
+- **Reason**: Clearer intent, different timeout expectations
+
+### Market Cap Filtering
+- **Initial thought**: Include companies without market cap data
+- **Final decision**: Exclude when filters applied
+- **Reason**: Can't accurately filter unknowns, could mislead user
+
+## Tool Usage Patterns
+
+### Development Flow
+1. Start backend first: `cd server && npm run dev`
+2. Start frontend second: `cd client && npm run dev`
+3. Backend logs show API calls and pagination progress
+4. Frontend proxies `/api` to backend automatically
+
+### Debugging
+- Check browser Network tab for API calls
+- Check backend console for SEC/FMP API responses
+- Verify .env file has FMP_API_KEY
+- Test SEC API directly: curl with User-Agent header
+
+### Testing Approach
+- Manual testing (no automated tests yet)
+- Test small date ranges first (7 days)
+- Verify pagination with large ranges (90+ days)
+- Test market cap filtering with known companies
+- Export CSV and verify data completeness
+
+## Important File Locations
+
+### Configuration
+- `/server/.env` - API keys and config
+- `/client/vite.config.js` - Proxy configuration
+- `/client/tailwind.config.js` - Styling config
+
+### Key Files to Modify
+- `/server/src/services/secAPI.js` - SEC integration
+- `/server/src/services/fmpAPI.js` - Market cap integration
+- `/client/src/components/FilterPanel.jsx` - Add new filters here
+- `/client/src/components/FilingsList.jsx` - Modify display here
+
+### Don't Touch
+- `/server/src/utils/rateLimiter.js` - Rate limiting works well
+- `/client/src/hooks/useInfiniteScroll.js` - Solid implementation
+
+## Future Enhancement Notes
+
+### Performance Improvements Needed
+- Add Redis caching for CIK→ticker mappings (reduce FMP calls)
+- Implement request deduplication
+- Add progress indicators for long-running exports
+
+### Feature Requests to Consider
+- Save search presets
+- Email alerts for new filings
+- Charts and visualizations
+- Database for historical queries
+
+### Known Technical Debt
+- No automated tests
+- No error tracking (Sentry)
+- No monitoring/alerting
+- Basic error handling (could be more granular)
+

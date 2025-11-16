@@ -1,0 +1,14 @@
+{
+  "name": "sec-filings-filter",
+  "version": "1.0.0",
+  "description": "SEC Filings Filter Application",
+  "scripts": {
+    "install:all": "cd client && npm install && cd ../server && npm install",
+    "build": "cd client && npm run build",
+    "vercel-build": "npm run build"
+  },
+  "keywords": ["sec", "filings", "filter"],
+  "author": "",
+  "license": "MIT"
+}
+

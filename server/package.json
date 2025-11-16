@@ -1,0 +1,22 @@
+{
+  "name": "sec-filings-server",
+  "version": "1.0.0",
+  "description": "Backend server for SEC filings filter application",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "keywords": ["sec", "filings", "api"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "axios": "^1.6.2",
+    "p-queue": "^8.0.1",
+    "dotenv": "^16.3.1"
+  }
+}
+

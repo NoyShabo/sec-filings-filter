@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { fetchFilingsHybrid } from '../../../lib/hybridFilingsAPI.js'
-import { processFilings, paginateResults } from '../../../lib/dataProcessor.js'
+import { fetchFilingsHybrid } from '../../../lib/hybridFilingsAPI'
+import { processFilings, paginateResults } from '../../../lib/dataProcessor'
 
 // Configure runtime to use Node.js
 export const runtime = 'nodejs'

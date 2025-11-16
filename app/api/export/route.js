@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { fetchFilingsHybrid } from '../../../server/src/services/hybridFilingsAPI.js'
-import { processFilings } from '../../../server/src/services/dataProcessor.js'
+import { fetchFilingsHybrid } from '../../../lib/hybridFilingsAPI.js'
+import { processFilings } from '../../../lib/dataProcessor.js'
 
 export async function POST(request) {
   try {

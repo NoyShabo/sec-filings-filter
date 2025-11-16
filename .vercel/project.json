@@ -1,1 +1,16 @@
-{"projectId":"prj_NPKpyJ5CTwqJe8AQFHIBD5EHlJd2","orgId":"team_UhSApw1fikqPNyTPMuXZKvUT","projectName":"filter-1"}
+{
+  "projectId": "prj_nDAjwZ9lZHdAsSRbeP7uV4mWRXAd",
+  "orgId": "team_UhSApw1fikqPNyTPMuXZKvUT",
+  "projectName": "filter-1",
+  "settings": {
+    "createdAt": 1763321862972,
+    "framework": "nextjs",
+    "devCommand": null,
+    "installCommand": null,
+    "buildCommand": null,
+    "outputDirectory": null,
+    "rootDirectory": null,
+    "directoryListing": false,
+    "nodeVersion": "22.x"
+  }
+}

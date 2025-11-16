@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "SEC Filings Filter Application",
   "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -23,13 +26,7 @@
     "postcss": "^8.4.32",
     "tailwindcss": "^3.3.6"
   },
-  "keywords": [
-    "sec",
-    "filings",
-    "filter",
-    "nextjs"
-  ],
+  "keywords": ["sec", "filings", "filter", "nextjs"],
   "author": "",
-  "license": "MIT",
-  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
+  "license": "MIT"
 }

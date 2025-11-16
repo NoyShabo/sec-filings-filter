@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState } from 'react';
-import { getDateRange } from '../utils/dateHelpers';
+import { useState } from 'react'
+import { getDateRange } from '../utils/dateHelpers'
 
 const FILE_TYPES = [
   '10-K',

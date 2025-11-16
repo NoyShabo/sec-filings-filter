@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import FilterPanel from '../components/FilterPanel'
-import FilingsList from '../components/FilingsList'
-import ExportButton from '../components/ExportButton'
+import { FilterPanel } from '../components/FilterPanel'
+import { FilingsList } from '../components/FilingsList'
+import { ExportButton } from '../components/ExportButton'
 import { useSECFilings } from '../hooks/useSECFilings'
 
 export default function Home() {

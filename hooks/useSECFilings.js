@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useCallback } from 'react';
-import axios from 'axios';
+import { useState, useCallback } from 'react'
+import axios from 'axios'
 
 /**
  * Custom hook for fetching SEC filings

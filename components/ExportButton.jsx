@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState } from 'react';
-import { downloadCSV, generateFilename } from '../utils/csvExport';
+import { useState } from 'react'
+import { downloadCSV, generateFilename } from '../utils/csvExport'
 
 export function ExportButton({ filters, onExport, disabled }) {
   const [exporting, setExporting] = useState(false);

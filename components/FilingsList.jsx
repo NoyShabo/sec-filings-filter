@@ -1,8 +1,7 @@
 'use client'
 
-import React from 'react';
-import { formatDate } from '../utils/dateHelpers';
-import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
+import { formatDate } from '../utils/dateHelpers'
+import { useInfiniteScroll } from '../hooks/useInfiniteScroll'
 
 function formatMarketCap(marketCap) {
   if (!marketCap) return 'N/A';

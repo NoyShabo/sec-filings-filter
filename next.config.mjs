@@ -1,9 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  env: {
-    FMP_API_KEY: process.env.FMP_API_KEY,
-  },
+  // Environment variables are automatically available in API routes
+  // No need to explicitly expose them here
 }
 
 export default nextConfig

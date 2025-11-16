@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Next.js
+/.next/
+/out/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -27,4 +31,7 @@ dist-ssr
 .env
 .env.local
 .env.production
+
+# Vercel
+.vercel
 

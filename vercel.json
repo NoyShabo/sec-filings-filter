@@ -1,26 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd client && npm install && npm run build",
-  "outputDirectory": "client/dist",
-  "functions": {
-    "api/**/*.js": {
-      "memory": 1024,
-      "maxDuration": 60
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/api/filings",
-      "destination": "/api/filings"
-    },
-    {
-      "source": "/api/filings/export",
-      "destination": "/api/export"
-    },
-    {
-      "source": "/api/health",
-      "destination": "/api/health"
-    }
-  ]
+  "env": {
+    "FMP_API_KEY": "@fmp_api_key"
+  }
 }
-

@@ -1,36 +1,37 @@
-import React, { useState } from 'react';
-import { FilterPanel } from './components/FilterPanel';
-import { FilingsList } from './components/FilingsList';
-import { ExportButton } from './components/ExportButton';
-import { useSECFilings } from './hooks/useSECFilings';
-import './index.css';
+'use client'
 
-function App() {
-  const [currentFilters, setCurrentFilters] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const { loading, error, data, pagination, fetchFilings, fetchAllFilings, reset } = useSECFilings();
+import { useState } from 'react'
+import FilterPanel from '../components/FilterPanel'
+import FilingsList from '../components/FilingsList'
+import ExportButton from '../components/ExportButton'
+import { useSECFilings } from '../hooks/useSECFilings'
+
+export default function Home() {
+  const [currentFilters, setCurrentFilters] = useState(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const { loading, error, data, pagination, fetchFilings, fetchAllFilings, reset } = useSECFilings()
 
   const handleSearch = async (filters) => {
     // Reset previous results
-    reset();
-    setCurrentPage(1);
-    setCurrentFilters(filters);
+    reset()
+    setCurrentPage(1)
+    setCurrentFilters(filters)
     
     // Fetch first page
-    await fetchFilings(filters, 1);
-  };
+    await fetchFilings(filters, 1)
+  }
 
   const handleLoadMore = async () => {
-    if (!currentFilters || loading || !pagination?.hasMore) return;
+    if (!currentFilters || loading || !pagination?.hasMore) return
     
-    const nextPage = currentPage + 1;
-    setCurrentPage(nextPage);
-    await fetchFilings(currentFilters, nextPage);
-  };
+    const nextPage = currentPage + 1
+    setCurrentPage(nextPage)
+    await fetchFilings(currentFilters, nextPage)
+  }
 
   const handleExport = async (filters) => {
-    return await fetchAllFilings(filters);
-  };
+    return await fetchAllFilings(filters)
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -97,7 +98,7 @@ function App() {
             </svg>
             <h3 className="mt-4 text-lg font-medium text-gray-900">Welcome!</h3>
             <p className="mt-2 text-gray-500">
-              Set your filters above and click "Search Filings" to get started
+              Set your filters above and click &quot;Search Filings&quot; to get started
             </p>
           </div>
         )}
@@ -112,8 +113,6 @@ function App() {
         </div>
       </footer>
     </div>
-  );
+  )
 }
-
-export default App;
 

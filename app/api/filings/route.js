@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server'
 import { fetchFilingsHybrid } from '../../../lib/hybridFilingsAPI.js'
 import { processFilings, paginateResults } from '../../../lib/dataProcessor.js'
 
+// Configure runtime to use Node.js
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 // Handle CORS preflight
 export async function OPTIONS(request) {
   return new NextResponse(null, {

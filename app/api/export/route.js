@@ -2,6 +2,18 @@ import { NextResponse } from 'next/server'
 import { fetchFilingsHybrid } from '../../../lib/hybridFilingsAPI.js'
 import { processFilings } from '../../../lib/dataProcessor.js'
 
+// Handle CORS preflight
+export async function OPTIONS(request) {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  })
+}
+
 export async function POST(request) {
   try {
     const body = await request.json()

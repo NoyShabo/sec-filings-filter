@@ -1,6 +1,34 @@
+# Dependencies
 node_modules
-.env
-.env.local
-*.log
-.DS_Store
 
+# Old client files (not needed for Next.js)
+client
+
+# Server files (only Next.js API routes needed)
+server/src/server.js
+server/src/routes
+
+# Development
+.env.local
+.env*.local
+
+# Testing
+*.test.js
+*.spec.js
+
+# Documentation
+memory-bank
+QUICKSTART.md
+DEPLOYMENT.md
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+
+# Railway config (not needed on Vercel)
+railway.json
+server/railway.json

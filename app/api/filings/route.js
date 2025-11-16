@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { fetchSECFilings } from '../../../server/src/services/secAPI.js'
+import { fetchFilingsHybrid } from '../../../server/src/services/hybridFilingsAPI.js'
 import { processFilings, paginateResults } from '../../../server/src/services/dataProcessor.js'
 
 export async function POST(request) {
@@ -37,8 +37,8 @@ export async function POST(request) {
       limit,
     })
 
-    // Fetch SEC filings (single page)
-    const secFilings = await fetchSECFilings({
+    // Fetch SEC filings using hybrid approach (FMP for historical, SEC for recent)
+    const secFilings = await fetchFilingsHybrid({
       fileType,
       startDate: formattedStartDate,
       endDate: formattedEndDate,

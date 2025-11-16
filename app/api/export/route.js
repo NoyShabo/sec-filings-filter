@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { fetchSECFilings } from '../../../server/src/services/secAPI.js'
+import { fetchFilingsHybrid } from '../../../server/src/services/hybridFilingsAPI.js'
 import { processFilings } from '../../../server/src/services/dataProcessor.js'
 
 export async function POST(request) {
@@ -33,8 +33,8 @@ export async function POST(request) {
       maxMarketCap,
     })
 
-    // Fetch ALL SEC filings (fetchAll = true)
-    const secFilings = await fetchSECFilings({
+    // Fetch ALL SEC filings using hybrid approach (FMP for historical, SEC for recent)
+    const secFilings = await fetchFilingsHybrid({
       fileType,
       startDate: formattedStartDate,
       endDate: formattedEndDate,

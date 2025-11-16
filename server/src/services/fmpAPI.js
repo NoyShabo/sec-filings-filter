@@ -5,6 +5,7 @@ import { findTickerByCIK, findTickerByName } from './stockListCache.js';
 dotenv.config();
 
 const FMP_BASE_URL = 'https://financialmodelingprep.com/api/v3';
+const FMP_V4_BASE_URL = 'https://financialmodelingprep.com/api/v4';
 const FMP_API_KEY = process.env.FMP_API_KEY;
 
 /**
@@ -216,6 +217,95 @@ export async function cikToTicker(cik, companyName = null) {
   } catch (error) {
     console.error(`Error converting CIK ${cik} to ticker:`, error.message);
     return null;
+  }
+}
+
+/**
+ * Fetch SEC filings from FMP RSS feed (supports historical data)
+ * @param {Object} params - Search parameters
+ * @param {string} params.fileType - Filing type (e.g., '10-K', '8-K')
+ * @param {string} params.startDate - Start date in YYYY-MM-DD format
+ * @param {string} params.endDate - End date in YYYY-MM-DD format
+ * @param {number} params.page - Page number (0-indexed)
+ * @param {number} params.limit - Results per page
+ * @returns {Promise<Array>} Array of filing objects
+ */
+export async function fetchSECFilingsFromFMP({ fileType, startDate, endDate, page = 0, limit = 100 }) {
+  if (!FMP_API_KEY) {
+    throw new Error('FMP_API_KEY is not configured in environment variables');
+  }
+
+  try {
+    console.log(`[FMP] Fetching ${fileType} filings from ${startDate} to ${endDate}, page ${page}`);
+
+    // FMP RSS feed endpoint - supports date ranges and pagination
+    const response = await axios.get(`${FMP_V4_BASE_URL}/rss_feed`, {
+      params: {
+        type: fileType,
+        from: startDate,
+        to: endDate,
+        page,
+        apikey: FMP_API_KEY
+      },
+      timeout: 30000,
+    });
+
+    if (!response.data || response.data.length === 0) {
+      console.log(`[FMP] No filings found for ${fileType} from ${startDate} to ${endDate}`);
+      return [];
+    }
+
+    // Transform FMP response to match our format
+    const filings = response.data.map(filing => ({
+      company: filing.title || filing.symbol || 'Unknown',
+      cik: filing.cik,
+      formType: filing.type,
+      filingDate: filing.fillingDate || filing.date,
+      filingUrl: filing.link || filing.finalLink,
+      ticker: filing.symbol,
+    }));
+
+    console.log(`[FMP] Fetched ${filings.length} filings from FMP`);
+    return filings;
+
+  } catch (error) {
+    // Check if it's a plan limitation error
+    if (error.response?.status === 403 || error.response?.data?.message?.includes('upgrade')) {
+      console.warn(`[FMP] RSS feed requires premium plan. Error: ${error.response?.data?.message || error.message}`);
+      throw new Error('FMP_PREMIUM_REQUIRED');
+    }
+    
+    console.error(`[FMP] Error fetching SEC filings:`, error.message);
+    throw error;
+  }
+}
+
+/**
+ * Check if FMP API supports RSS feed (premium feature check)
+ * @returns {Promise<boolean>} True if RSS feed is available
+ */
+export async function checkFMPRSSFeedAvailable() {
+  if (!FMP_API_KEY) {
+    return false;
+  }
+
+  try {
+    const response = await axios.get(`${FMP_V4_BASE_URL}/rss_feed`, {
+      params: {
+        type: '10-K',
+        page: 0,
+        apikey: FMP_API_KEY
+      },
+      timeout: 10000,
+    });
+
+    // If we get data back, RSS feed is available
+    return response.status === 200;
+  } catch (error) {
+    if (error.response?.status === 403) {
+      return false; // Premium feature not available
+    }
+    return false;
   }
 }
 

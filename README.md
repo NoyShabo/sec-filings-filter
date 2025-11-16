@@ -12,6 +12,12 @@ A powerful full-stack web application built with **Next.js 14** to search and fi
 - **CSV Export**: Export all filtered results to CSV with one click
 - **Direct Filing Access**: Quick links to view official SEC documents
 
+## ⚠️ Important Limitation
+
+**Date Range Limitation**: The SEC's `getcurrent` API endpoint returns **recent filings only** (typically last 30 days). Historical searches beyond 30 days may return incomplete results. For best accuracy, use date ranges within the last 30 days.
+
+This is a limitation of the free SEC EDGAR API, not the application itself.
+
 ## 🛠️ Tech Stack
 
 - **Frontend**: Next.js 14 (App Router), React 18, Tailwind CSS
@@ -204,10 +210,12 @@ To reduce API calls to Financial Modeling Prep, the app caches the full stock li
 
 ## 🐛 Troubleshooting
 
-### No results showing
+### No results showing or incomplete results
+- **Most Common Cause**: Date range is too old (beyond 30 days)
+  - **Solution**: Use "Last 7 Days" or "Last 30 Days" for best results
 - Check that your date range has filings for that file type
-- Try a larger date range (e.g., Last 90 Days)
 - Remove market cap filters to see if data is available
+- The SEC API only returns recent filings - historical searches are limited
 
 ### Market Cap showing N/A
 - Some companies don't have public market cap data

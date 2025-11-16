@@ -70,12 +70,29 @@ export async function POST(request) {
       maxMarketCap,
     })
 
-    console.log(`Returning ${processedFilings.length} filings for export`)
+    // Deduplicate filings to ensure each unique filing appears only once
+    const uniqueFilings = [];
+    const seenFilings = new Map();
+    
+    for (const filing of processedFilings) {
+      // Create unique key: CIK + Filing Type + Filing Date
+      const key = `${filing.cik}-${filing.formType}-${filing.filingDate}`;
+      
+      if (!seenFilings.has(key)) {
+        seenFilings.set(key, true);
+        uniqueFilings.push(filing);
+      } else {
+        console.log(`[EXPORT DEDUP] Skipping duplicate: ${filing.company} (${filing.ticker}) - ${filing.formType} on ${filing.filingDate}`);
+      }
+    }
+
+    console.log(`Removed ${processedFilings.length - uniqueFilings.length} duplicate filings`);
+    console.log(`Returning ${uniqueFilings.length} unique filings for export`);
 
     // Return all results (no pagination)
     return NextResponse.json({
-      data: processedFilings,
-      total: processedFilings.length,
+      data: uniqueFilings,
+      total: uniqueFilings.length,
     })
   } catch (error) {
     console.error('Error in /api/export:', error)

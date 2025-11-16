@@ -81,8 +81,26 @@ export async function POST(request) {
       maxMarketCap,
     })
 
+    // Deduplicate filings to ensure each unique filing appears only once
+    const uniqueFilings = [];
+    const seenFilings = new Map();
+    
+    for (const filing of processedFilings) {
+      // Create unique key: CIK + Filing Type + Filing Date
+      const key = `${filing.cik}-${filing.formType}-${filing.filingDate}`;
+      
+      if (!seenFilings.has(key)) {
+        seenFilings.set(key, true);
+        uniqueFilings.push(filing);
+      }
+    }
+
+    if (processedFilings.length !== uniqueFilings.length) {
+      console.log(`[SEARCH DEDUP] Removed ${processedFilings.length - uniqueFilings.length} duplicate filings`);
+    }
+
     // Return paginated results
-    const result = paginateResults(processedFilings, page, limit)
+    const result = paginateResults(uniqueFilings, page, limit)
     
     return NextResponse.json(result)
   } catch (error) {
